@@ -1,13 +1,14 @@
 require 'fileutils'
 require 'ftools'
+require 'yaml'
 
 module Transender
 
   # :stopdoc:
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
-  v = YAML.load_file(File.join(File.dirname(__FILE__), %w[.. VERSION.yml]))
-  VERSION = "#{v[:major]}.#{v[:minor].v[patch]}" 
+  V = YAML.load_file(File.join(File.dirname(__FILE__), %w[.. VERSION.yml]))
+  VERSION = "#{V[:major]}.#{V[:minor]}.#{V[:patch]}" 
   # :startdoc:
 
   # Returns the version string for the library.
