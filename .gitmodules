@@ -1,0 +1,3 @@
+[submodule "iproject"]
+	path = iproject
+	url = git://github.com/mihael/iproject.git
