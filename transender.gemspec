@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.default_executable = %q{transender}
   s.email = %q{kitschmaster@gmail.com}
   s.executables = ["transender"]
-  s.extra_rdoc_files = ["README", "README.rdoc", "LICENSE"]
-  s.files = ["History.txt", "README.rdoc", "bin/transender", "lib/transender.rb", "test/test_transender.rb", "test/test_transender.sh", "spec/spec_helper.rb", "spec/transender_spec.rb", "README", "LICENSE"]
+  s.extra_rdoc_files = ["README.rdoc", "LICENSE"]
+  s.files = ["History.txt", "README.rdoc", "VERSION.yml", "bin/transender", "lib/transender.rb", "test/test_transender.rb", "test/test_transender.sh", "spec/spec_helper.rb", "spec/transender_spec.rb", "LICENSE"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/mihael/transender}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
