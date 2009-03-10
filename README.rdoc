@@ -12,16 +12,18 @@ Project home: http://kitschmaster.com/kiches/246
 == SYNOPSIS:
 
 You could use it in a Rails app maybe like this:
-Transender::Ji.transform_and_zip({:app_title=>"myClonedProject", :transform=>"git://github.com/mihael/iproject.git", :ji_path => File.join(File.dirname(__FILE__), %w[.. tmp]) }) do |zip|
-  render :text => zip
-end
+
+  Transender::Ji.transform_and_zip({:app_title=>"myClonedProject", :transform=>"git://github.com/mihael/iproject.git", :ji_path => File.join(File.dirname(__FILE__), %w[.. tmp]) }) do |zip|
+    render :text => zip
+  end
 
 Or on the command line, like this:
-transender git://github.com/mihael/iproject.git myFreshProject /projects/
+
+  transender git://github.com/mihael/iproject.git myFreshProject /projects/
 
 == REQUIREMENTS:
 
-Nothing you would not have.
+Nothing you would not have. Only the simple tools.
 
 * sed
 * tar
@@ -29,6 +31,8 @@ Nothing you would not have.
 * ruby
 
 == INSTALL:
+
+GitHub style:
 
 * sudo gem install mihael-transender
 
