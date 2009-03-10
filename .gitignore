@@ -5,10 +5,14 @@ build/*
 
 # old skool
 .svn
+*~
 
 # osx noise
 .DS_Store
 profile
 
-# 
+#transender 
 tmp/*
+
+#mrbones
+pkg/*
