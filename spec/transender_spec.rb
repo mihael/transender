@@ -25,7 +25,7 @@ describe Transender do
     ji = Ji.new({:app_title=>"xyzproject", :transform=>File.join(File.dirname(__FILE__), %w[.. iproject]), :ji_path => File.join(File.dirname(__FILE__), %w[.. tmp]) })
     ji.clone_and_remove_git
     ji.rename
-    puts File.exists?(File.join(ji.app_path, ji.app_title)).should be(true)
+    puts File.exists?(File.join(ji.app_path)).should be(true)
   end
 
 
