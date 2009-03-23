@@ -2,16 +2,16 @@
 
 Gem::Specification.new do |s|
   s.name = %q{transender}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mihael"]
-  s.date = %q{2009-03-10}
+  s.date = %q{2009-03-23}
   s.default_executable = %q{transender}
   s.email = %q{kitschmaster@gmail.com}
   s.executables = ["transender"]
-  s.extra_rdoc_files = ["README.rdoc", "LICENSE"]
-  s.files = ["History.txt", "README.rdoc", "VERSION.yml", "bin/transender", "lib/transender.rb", "test/test_transender.rb", "test/test_transender.sh", "spec/spec_helper.rb", "spec/transender_spec.rb", "LICENSE"]
+  s.extra_rdoc_files = ["README.rdoc", "README.txt", "LICENSE"]
+  s.files = ["History.txt", "README.rdoc", "README.txt", "VERSION.yml", "bin/transender", "lib/tasks", "lib/tasks/pushup.rake", "lib/transender.rb", "test/test_transender.rb", "test/test_transender.sh", "spec/spec_helper.rb", "spec/transender_spec.rb", "LICENSE"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/mihael/transender}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
