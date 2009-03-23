@@ -62,7 +62,7 @@ module Transender
     `tar cvfz '#{out_file}' '#{dir}'`
     out_file
   end
-  
+
   def self.extract_app_title(giturl)
     giturl.split('/').last.split('.').first
   end
@@ -116,7 +116,7 @@ module Transender
     def zip
       z = File.join(ji_path, "#{app_title}.zip")
      `rm -rf #{z}` #remove any previous zips without any warnings
-      Transender.zip_dir(File.join(ji_path, app_title), z)
+      `cd #{ji_path}; tar cvfz #{app_title}.zip #{app_title}/`
       puts "Zipped #{app_title} into #{z}" if File.exists?(z)
       z
     end

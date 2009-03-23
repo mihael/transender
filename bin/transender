@@ -10,6 +10,7 @@ app_title = ARGV[1]
 out_dir = ARGV[2]
 
 def usage
+  puts "Transender #{Transender::VERSION} - the iPhoneSDK cloning/renaming gem"
   puts "Usage:\n"
   puts "~>transender git://github.com/somebodyatgithub/someiphoneipodproject.git myCoolProject /myCool/Path/To/Projects/Path/"
   puts "transform - a git repository \n"
