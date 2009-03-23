@@ -1,4 +1,3 @@
-
 require File.join(File.dirname(__FILE__), %w[spec_helper])
 include Transender
 
@@ -48,5 +47,3 @@ describe Transender do
   end
 
 end
-
-# EOF
