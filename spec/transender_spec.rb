@@ -47,7 +47,6 @@ describe Transender do
     end.should_not raise_error
   end
 
-
 end
 
 # EOF

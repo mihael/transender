@@ -26,7 +26,7 @@ PROJ.version = Transender::VERSION
 PROJ.rubyforge.name = 'transender'
 PROJ.spec.opts << '--color'
 PROJ.ignore_file = '.gitignore'
-PROJ.readme_file = 'README.rdoc'
+PROJ.readme_file = 'README.txt'
 
 require 'rubygems'
 require 'rake'

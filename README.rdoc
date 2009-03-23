@@ -34,7 +34,12 @@ Nothing you would not have. Only the simple tools.
 
 GitHub style:
 
+* gem sources -a http://gems.github.com
 * sudo gem install mihael-transender
+
+RubyForge style:
+
+* sudo gem install transender
 
 == Copyright
 
