@@ -90,8 +90,8 @@ module Transender
     def clone_and_remove_git
       #prepare destination without any warning
       `rm -rf #{@app_path}`
-      #clone that git repo and rename at the same time
-      `git clone #{@transform} #{@app_path}`
+      #clone that git repo and rename at the same time, use --work-tree, otherwise rake spec fails miserably
+      `git --work-tree=#{@app_path} clone --no-hardlinks #{@transform} #{@app_path}`
       #remove any past life remains from the fresh project
       `rm -rf #{File.join(@app_path, 'build')}`
       `rm -rf #{File.join(@app_path, '.git')}`
@@ -121,7 +121,7 @@ module Transender
       z
     end
     
-    def transform
+    def transformize
       clone_and_remove_git
       rename
       zip
@@ -129,7 +129,7 @@ module Transender
 
     #Use maybe like this: Transender::Ji.transform_and_zip(ahash) {|zip| render :text => zip}
     def self.transform_and_zip(t={}, &block)
-      zip = Ji.new(t).transform
+      zip = Ji.new(t).transformize
       yield zip if block
     end
 
