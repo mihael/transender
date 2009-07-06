@@ -72,9 +72,9 @@ module Transender
     attr_accessor :options, :app_title, :app_path, :transform, :transform_title, :ji_path, :id
 
     # Supply a Hash of options containing:
-    # :app_title - your fresh apps title
-    # :transform - git repository of the base project - app_title becomes a clone of it
-    # :ji_path - output dir
+    # options[:app_title]:: your fresh apps title
+    # options[:transform]:: git repository of the base project - app_title becomes a clone of it
+    # options[:ji_path]:: output dir
     def initialize(options)
       raise ArgumentError unless options.class == Hash && options[:app_title] && options[:transform] && options[:ji_path]
       @options = options
