@@ -25,7 +25,7 @@ end
 
 require 'benchmark'
 
-time = Benchmark.realtime {Transender::Ji.transform_and_zip({:transform => transform, :app_title => app_title, :ji_path => out_dir})}
+time = Benchmark.realtime {Transender::Ji.transend({:transform => transform, :app_title => app_title, :ji_path => out_dir})}
 puts "Realtime used : #{time}sec"
 
 # EOF
