@@ -1,0 +1,30 @@
+# a transender bowl
+# defines how transender should transform a MakeMoney cloned iPhone/iPod touch app into another
+
+app:
+    APP_SERVER_URL: http://kitschmaster.com
+    APP_TITLE: moonpreview
+    APP_ID: 16
+    PRICE: 0.99
+    IRS: 0.7
+    PRAYER: Serve.
+    MANTRA: Make Money.
+
+store:
+    SKU_NUMBER: Your SKUNUMBER for this app
+    DESCRIPTION: 
+        Your text for app store submit.
+        Can have 700 chars.
+
+#list the files you want to keep, all else will be deleted
+#if you do not list any files, no files will be deleted
+files:
+    Controllers:
+        #- MessageViewController
+        #- KopterViewController
+    Filters:
+        #- Filter_twitter
+        #- Filter_koornk
+    Views:
+        #- MessageView
+        #- KopterView
