@@ -277,7 +277,10 @@ module Transender
       Dir["#{app_path}/*.{m,h,pch,xib}"].each do |filename|
         Transender.replace_strings_in_file(transform_title, app_title, filename)
       end
-      Dir["#{app_path}/Classes/*.{m,h}"].each do |filename|
+      Dir["#{app_path}/Views/*.{m,h,pch,xib}"].each do |filename|
+        Transender.replace_strings_in_file(transform_title, app_title, filename)
+      end
+      Dir["#{app_path}/Classes/**/*.{m,h}"].each do |filename|
         Transender.replace_strings_in_file(transform_title, app_title, filename)
       end
       Dir["#{app_path}/#{app_title}.xcodeproj/*.*"].each do |filename|
