@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), %w[spec_helper])
 include Transender
+RSPEC=:yes
 
 describe Transender do
   
@@ -27,7 +28,6 @@ describe Transender do
     puts File.exists?(File.join(ji.app_path)).should be(true)
   end
 
-
   it "should transform and zip" do 
     proc do
        Ji.transform_and_zip({:app_title=>"xyzproject", :transform=>File.join(File.dirname(__FILE__), %w[.. iproject]), :ji_path => File.join(File.dirname(__FILE__), %w[.. tmp]) }) do |zip|
@@ -43,6 +43,12 @@ describe Transender do
          zip.should == File.join(File.dirname(__FILE__), %w[.. tmp freshproject.zip])
          File.exists?(zip).should == true
        end
+    end.should_not raise_error
+  end
+
+  it "should transform and transend" do 
+    proc do
+       Ji.transend({:app_title=>"aproject", :transform=>File.join(File.dirname(__FILE__), %w[.. iproject]), :ji_path => File.join(File.dirname(__FILE__), %w[.. tmp aproject]) })
     end.should_not raise_error
   end
 

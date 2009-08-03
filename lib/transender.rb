@@ -1,5 +1,4 @@
 require 'fileutils'
-require 'ftools'
 require 'yaml'
 
 module Transender
@@ -63,38 +62,133 @@ module Transender
     out_file
   end
 
-  def self.extract_app_title(giturl)
-    giturl.split('/').last.split('.').first
+  def self.extract_name(url)
+    url.split('/').last.split('.').first
   end
   
   #Transender - Ji
   class Ji
-    attr_accessor :options, :app_title, :app_path, :transform, :transform_title, :ji_path, :id
+    attr_accessor :options, :app_title, :app_path, :transform, :transform_title, :ji_path, :abowl_path, :abowl_yml, :id
 
     # Supply a Hash of options containing:
     # options[:app_title]:: your fresh apps title
     # options[:transform]:: git repository of the base project - app_title becomes a clone of it
     # options[:ji_path]:: output dir
     def initialize(options)
-      raise ArgumentError unless options.class == Hash && options[:app_title] && options[:transform] && options[:ji_path]
+      raise ArgumentError unless options.class == Hash && options[:app_title] && options[:transform] #&& options[:ji_path]
       @options = options
+      @ji_path = @options[:ji_path] || Dir.getwd
+      @ji_path = Dir.getwd if @ji_path.empty?
+      puts "Ji path is: #{@ji_path}"
+      unless File.exists? @ji_path
+        begin
+          FileUtils.mkdir @ji_path
+        rescue 
+          puts "Output path could not be created."
+          raise ArgumentError
+        end
+      end
       @app_title = @options[:app_title]
-      @transform = @options[:transform]
-      @transform_title = Transender.extract_app_title(@transform)
-      @ji_path = @options[:ji_path]
       @app_path = File.join(@ji_path, @app_title)
-      @id = Time.now.strftime("%Y-%m-%d-%s")    
+      @abowl_path = File.join(@ji_path, "abowl")
+      @abowl_yml = File.join(@abowl_path, "abowl.yml")
+      @transform = @options[:transform]
+      @transform_title = Transender.extract_name(@transform)
+      @id = Time.now.strftime("%Y-%m-%d-%s")
+    end
+    
+    #read abowl, transend that information into existing project
+    #deleting, copying files in this proces
+    def transend
+      if read_abowl 
+        
+        # handle artwork if any
+        files = Dir["#{abowl_path}/Artwork/*"]
+        if files&&files.size>0
+          #remove original artwork
+          FileUtils.rm_rf "#{app_path}/Artwork"
+          #copy this bowls artworks
+          FileUtils.cp_r "#{abowl_path}/Artwork", "#{app_path}/"
+        end
+
+        # handle transends if any
+        files = Dir["#{abowl_path}/Transends/*"]
+        if files&&files.size>0
+          #remove original transends
+          FileUtils.rm_rf "#{app_path}/Transends"
+          #copy this bowls transends
+          FileUtils.cp_r "#{abowl_path}/Transends", "#{app_path}/"
+        end
+        
+        # handle files
+        ['Controllers', 'Filters'].each do |type|
+          filenames = @abowl['files'][type]
+          if filenames&&filenames.size>0
+            Dir["#{app_path}/Classes/#{type}/*.{m,h}"].each do |file|
+              name = Transender.extract_name(file)
+              FileUtils.rm file unless filenames.member? name
+            end
+          end
+        end
+        filenames = @abowl['files']['Views']
+        if filenames&&filenames.size>0
+          Dir["#{app_path}/Views/*.{xib, nib}"].each do |file|
+            name = Transender.extract_name(file)
+            FileUtils.rm file unless filenames.member? name
+          end
+        end
+
+        #handle app delegate defines
+        defines = @abowl['app']
+        appDelegate = "#{app_path}/Classes/Application/#{app_title}AppDelegate.h"
+        appDelegate_temp = "#{app_path}/Classes/Application/#{app_title}AppDelegate.h.temp"
+        File.open(appDelegate_temp, "w") do |outfile|
+          File.open(appDelegate, "r") do |infile|
+            while (line = infile.gets)
+              if line =~ /#define/
+                key = line.split[1]
+                if defines.has_key? key
+                  value = defines[key]
+                  if value.to_s =~ /^(\d)*\.(\d)*$/ #is numerical
+                    outfile << (line.gsub /^#define #{key} .*$/, "#define #{key} #{value}")
+                    puts "#define #{key} #{value}"
+                  else
+                    outfile << (line.gsub /^#define #{key} .*$/, "#define #{key} @\"#{value}\"")
+                    puts "#define #{key} #{value}"
+                  end
+                end
+              else
+                outfile << line
+              end
+            end
+          end
+        end
+        FileUtils.mv appDelegate_temp, appDelegate
+        
+        puts "Transended #{@abowl['app']['APP_TITLE']}."
+
+      else #try to make a bowl then
+        make_abowl
+      end
     end
     
     #clones from transform then removes git
     def clone_and_remove_git
       #prepare destination without any warning
-      `rm -rf #{@app_path}`
-      #clone that git repo and rename at the same time, use --work-tree, otherwise rake spec fails miserably
-      `git --work-tree=#{@app_path} clone --no-hardlinks #{@transform} #{@app_path}`
+      FileUtils.rm_rf @app_path #`rm -rf #{@app_path}`
+      
+      if Object.const_defined? 'RSPEC'
+        #todo 
+        #this does not create a .git inside the cloned project
+        `git --work-tree=#{@app_path} --git-dir=#{@app_path}/.git clone --no-hardlinks #{@transform} #{@app_path}`
+      else
+        `git clone --no-hardlinks #{@transform} #{@app_path}`
+      end
+      
       #remove any past life remains from the fresh project
-      `rm -rf #{File.join(@app_path, 'build')}`
-      `rm -rf #{File.join(@app_path, '.git')}`
+      FileUtils.rm_rf File.join(@app_path, 'build') #`rm -rf #{File.join(@app_path, 'build')}`
+      FileUtils.rm_rf File.join(@app_path, '.git')  #`rm -rf #{File.join(@app_path, '.git')}`
+
       puts "Cloned from #{@transform} into #{@app_path}."
     end
 
@@ -115,8 +209,12 @@ module Transender
 
     def zip
       z = File.join(ji_path, "#{app_title}.zip")
-     `rm -rf #{z}` #remove any previous zips without any warnings
+      FileUtils.rm_rf z #`rm -rf #{z}` #remove any previous zips without any warnings
+      
+      #cd into and zip
       `cd #{ji_path}; tar cvfz #{app_title}.zip #{app_title}/`
+
+      #return path to zip
       puts "Zipped #{app_title} into #{z}" if File.exists?(z)
       z
     end
@@ -127,10 +225,32 @@ module Transender
       zip
     end
 
+    def transendize
+      clone_and_remove_git
+      rename
+      transend
+      zip
+    end
+
     #Use maybe like this: Transender::Ji.transform_and_zip(ahash) {|zip| render :text => zip}
     def self.transform_and_zip(t={}, &block)
       zip = Ji.new(t).transformize
       yield zip if block
+    end
+
+    #Use maybe like this: Transender::Ji.transend_and_zip(ahash) {|zip| render :text => zip}
+    def self.transend_and_zip(t={}, &block)
+      zip = Ji.new(t).transendize
+      yield zip if block
+    end
+
+    #Transender::Ji.transend
+    #if there is abowl, it will be used for transending
+    def self.transend(t={})
+      ji = Ji.new(t)
+      ji.clone_and_remove_git
+      ji.rename
+      ji.transend
     end
 
     private
@@ -142,7 +262,7 @@ module Transender
             FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
         end
       end
-      Dir["#{app_path}/Classes/*.{m,h}"].each do |filename|
+      Dir["#{app_path}/Classes/**/*.{m,h}"].each do |filename|
         if filename =~ /#{transform_title}/
             FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
         end
@@ -167,6 +287,27 @@ module Transender
     rescue
       puts $!
       false
+    end
+
+    private 
+    
+    def has_abowl?
+      File.exists? @abowl_yml
+    end
+    
+    def make_abowl
+      unless File.exists? @abowl_yml #do not overwrite
+          FileUtils.cp_r File.join(LIBPATH, "abowl"), @ji_path
+      end
+    rescue 
+      puts "Could not make abowl."
+    end
+    
+    def read_abowl
+      @abowl = YAML.load_file @abowl_yml
+    rescue 
+      puts "Could not read abowl."
+      nil
     end
 
   end # class Ji
