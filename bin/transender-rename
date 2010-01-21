@@ -12,8 +12,8 @@ out_dir = ARGV[2]
 def usage
   puts "Transender #{Transender::VERSION} - the iPhoneSDK cloning/renaming gem"
   puts "Usage:\n"
-  puts "~>transender myBadlyNamedProject/ myCoolProject /myCool/Path/To/Projects/Path/\n"
-  puts "~>transender <transform> <app_title> <out_dir>\n"
+  puts "~>transender-rename myBadlyNamedProject/ myCoolProject /myCool/Path/To/Projects/Path/\n"
+  puts "~>transender-rename <transform> <app_title> <out_dir>\n"
   puts "transform - an XCode project \n"
   puts "app_title - the renamed projects name\n"
   puts "out_dir - where to put fresh app's files\n"

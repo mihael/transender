@@ -8,13 +8,29 @@ Use Transender whenever you need to git-clone and rename XCode iPhone SDK projec
 
 Project home: http://kitschmaster.com/kiches/246
 
+When I started working with iPhone and iPod touch apps I soon realized how strange it is.
+One day I wanted to copy and rename an app. There was no easy way to do it.
+So I wrote some scripts to hack that.
+
+I call the process of cloning an existing app and renaming it right after: transending.
+
+So transend your codes.
 
 == FEATURES/PROBLEMS:
 
 * can clone XCode projects (on git) and rename them successfully (tested only on iPhone/iPod Touch projects)
 * use from command line or ruby program
+* since 0.2.8 an improved transending algorithm, uses a bowl
 
 == SYNOPSIS:
+
+The project/app You want to transend should be sitting in a git repository.
+
+An example of using it from a ruby program: 
+
+   Transender::Ji.transend( {:app_title=>"myClonedProject", :transform=>"git://github.com/mihael/iproject.git", :ji_path => File.join(File.dirname(__FILE__), %w[.. tmp]) })
+
+This would clone the iproject into ji_path. Then it would rename it to myClonedProject. It would also create "abowl" directory, which can be used with the unreleased MakeMoney iPhone and iPod touch programming framework.
 
 You could use it in a Rails app maybe like this:
 
@@ -25,6 +41,10 @@ You could use it in a Rails app maybe like this:
 Or on the command line, like this:
 
   transender git://github.com/mihael/iproject.git myFreshProject /projects/
+
+If You just need to rename an existing project You can do this:
+
+  transender-rename myBadlyNamedProject/ myCoolNamedProject /My/Cool/Path/To/My/Hot/Projects/Path/
 
 == REQUIREMENTS:
 
@@ -37,36 +57,9 @@ Nothing you would not have. Only the simple tools.
 
 == INSTALL:
 
-GitHub style:
-
-* gem sources -a http://gems.github.com
-* sudo gem install mihael-transender
-
-RubyForge style:
-
 * sudo gem install transender
 
 == LICENSE:
 
-(The MIT License)
 
-Copyright (c) 2008 FIXME (different license?)
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Copyright (c) Mihael. See LICENSE for details.
