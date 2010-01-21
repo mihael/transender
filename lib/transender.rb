@@ -102,42 +102,26 @@ module Transender
     def transend
       if read_abowl 
         
-        # handle artwork if any
-        files = Dir["#{abowl_path}/Artwork/*"]
-        if files&&files.size>0
-          #remove original artwork
-          FileUtils.rm_rf "#{app_path}/Artwork"
-          #copy this bowls artworks
-          FileUtils.cp_r "#{abowl_path}/Artwork", "#{app_path}/"
-        end
-
-        # handle transends if any
-        files = Dir["#{abowl_path}/Transends/*"]
-        if files&&files.size>0
-          #remove original transends
-          FileUtils.rm_rf "#{app_path}/Transends"
-          #copy this bowls transends
-          FileUtils.cp_r "#{abowl_path}/Transends", "#{app_path}/"
-        end
-        
-        # handle files
-        ['Controllers', 'Filters'].each do |type|
-          filenames = @abowl['files'][type]
-          if filenames&&filenames.size>0
-            Dir["#{app_path}/Classes/#{type}/*.{m,h}"].each do |file|
-              name = Transender.extract_name(file)
-              FileUtils.rm file unless filenames.member? name
+        # handle classes&views files
+        if @abowl['files']
+          dirz = @abowl['files'].keys
+          dirz.each do |type|
+            dir_string = "#{app_path}/Classes/#{type}/*.{m,h}"
+            dir_string = "#{app_path}/Views/*.{xib, nib}" if type == "Views"
+            filenames = @abowl['files'][type]
+            if filenames&&filenames.size>0
+              unless filenames.size == 1 && filenames[0] == "all"
+                Dir[dir_string].each do |file|
+                  name = Transender.extract_name(file)
+                  FileUtils.rm file unless filenames.member? name
+                end
+              end
+            else
+              FileUtils.rm_rf(Dir.glob(dir_string))
             end
           end
         end
-        filenames = @abowl['files']['Views']
-        if filenames&&filenames.size>0
-          Dir["#{app_path}/Views/*.{xib, nib}"].each do |file|
-            name = Transender.extract_name(file)
-            FileUtils.rm file unless filenames.member? name
-          end
-        end
-
+        
         #handle app delegate defines
         defines = @abowl['app']
         appDelegate = "#{app_path}/Classes/Application/#{app_title}AppDelegate.h"
@@ -172,6 +156,92 @@ module Transender
       end
     end
     
+    #backdrop and dropback are used inconjunction, to form a form of mending the code back into the project, while maintaining transendability with the mothers source
+    #saves Clasess, Artwork, Transends and Views to abowl
+    #this will later be copied back to the project
+    def backdrop
+      #make sure there is abowl
+      make_abowl unless read_abowl 
+
+      #if the app is already there
+      if File.exists?(app_path)
+
+        # handle artwork if any
+        files = Dir["#{app_path}/Artwork/*"]
+        if files&&files.size>0
+          #remove original artwork from abowl
+          FileUtils.rm_rf "#{abowl_path}/Artwork"
+          #copy this apps artworks to abowl
+          FileUtils.cp_r "#{app_path}/Artwork", "#{abowl_path}/"
+        end
+
+        # handle transends if any
+        files = Dir["#{app_path}/Transends/*"]
+        if files&&files.size>0
+          #remove original transends from abowl
+          FileUtils.rm_rf "#{abowl_path}/Transends"
+          #copy this bowls transends
+          FileUtils.cp_r "#{app_path}/Transends", "#{abowl_path}/"
+        end
+
+        # handle classes&views file
+        #FileUtils.rm_rf "#{abowl_path}/Classes"
+        #FileUtils.rm_rf "#{abowl_path}/Views"
+
+        if @abowl['files']
+          dirz = @abowl['files'].keys
+          dirz.each do |type|
+            FileUtils.cp_r "#{app_path}/Classes/#{type}", "#{abowl_path}/Classes/" unless type == "Views"
+          end
+        end
+        FileUtils.cp_r "#{app_path}/Views", "#{abowl_path}/"
+
+      end
+
+      #else do nothinf
+
+    end
+    
+    #drops the diff between saved abowl files back into the app_path
+    #this way, you can write code without having to worry about .git and stuff
+    #the mother source can be your template
+    #you just write the difference
+    #if you transend with a new release of the mother source, just add existing files in XCode after transending
+    def dropback
+      #the abowl has Classes, and the app has classes
+      #get all abowl classes and copy them over if they do not exist in the app_path
+      #do the same for views...
+
+      # handle artwork if any
+      files = Dir["#{abowl_path}/Artwork/*"]
+      if files&&files.size>0
+        #remove original artwork
+        FileUtils.rm_rf "#{app_path}/Artwork"
+        #copy this bowls artworks
+        FileUtils.cp_r "#{abowl_path}/Artwork", "#{app_path}/"
+      end
+
+      # handle transends if any
+      files = Dir["#{abowl_path}/Transends/*"]
+      if files&&files.size>0
+        #remove original transends
+        FileUtils.rm_rf "#{app_path}/Transends"
+        #copy this bowls transends
+        FileUtils.cp_r "#{abowl_path}/Transends", "#{app_path}/"
+      end
+
+      #copy from abowl.classes to app.classes if abowl.classes.file not in app.classes
+      `cp -rn '#{abowl_path}/Classes' '#{app_path}/';cp -rn '#{abowl_path}/Views' '#{app_path}/'`
+
+    end
+    
+    #copies from transform and renames
+    def copy_and_rename
+      #prepare destination without any warning
+      FileUtils.rm_rf @app_path #`rm -rf #{@app_path}`
+      `cp -r #{@transform} #{@app_path}`
+    end
+    
     #clones from transform then removes git
     def clone_and_remove_git
       #prepare destination without any warning
@@ -189,6 +259,10 @@ module Transender
       FileUtils.rm_rf File.join(@app_path, 'build') #`rm -rf #{File.join(@app_path, 'build')}`
       FileUtils.rm_rf File.join(@app_path, '.git')  #`rm -rf #{File.join(@app_path, '.git')}`
 
+      #cleanup Transends and Artwork, so it is empty
+      FileUtils.rm_rf Dir.glob("#{@app_path}/Artwork/**/*")
+      FileUtils.rm_rf Dir.glob("#{@app_path}/Transends/**/*")
+      
       puts "Cloned from #{@transform} into #{@app_path}."
     end
 
@@ -226,10 +300,17 @@ module Transender
     end
 
     def transendize
+      backdrop
       clone_and_remove_git
       rename
       transend
+      dropback
       zip
+    end
+
+    #Use maybe like this: Transender::Ji.xcode_rename(ahash)
+    def self.xcode_rename(t={})
+      Ji.new(t).copy_and_rename
     end
 
     #Use maybe like this: Transender::Ji.transform_and_zip(ahash) {|zip| render :text => zip}
@@ -248,9 +329,11 @@ module Transender
     #if there is abowl, it will be used for transending
     def self.transend(t={})
       ji = Ji.new(t)
+      ji.backdrop
       ji.clone_and_remove_git
       ji.rename
       ji.transend
+      ji.dropback
     end
 
     private
@@ -301,15 +384,17 @@ module Transender
     def make_abowl
       unless File.exists? @abowl_yml #do not overwrite
           FileUtils.cp_r File.join(LIBPATH, "abowl"), @ji_path
+          Transender.replace_strings_in_file('XappX', @app_title, @abowl_yml)
+          read_abowl
       end
     rescue 
-      puts "Could not make abowl."
+      puts "Could not make abowl. #{$!}"
     end
     
     def read_abowl
       @abowl = YAML.load_file @abowl_yml
     rescue 
-      puts "Could not read abowl."
+      puts "Could not read abowl. #{$!}" if File.exists? @app_path
       nil
     end
 

@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib transender]))
+
+$:.unshift File.join(File.dirname(__FILE__))
+
+#arguments
+transform = ARGV[0]
+app_title = ARGV[1] 
+out_dir = ARGV[2]
+
+def usage
+  puts "Transender #{Transender::VERSION} - the iPhoneSDK cloning/renaming gem"
+  puts "Usage:\n"
+  puts "~>transender myBadlyNamedProject/ myCoolProject /myCool/Path/To/Projects/Path/\n"
+  puts "~>transender <transform> <app_title> <out_dir>\n"
+  puts "transform - an XCode project \n"
+  puts "app_title - the renamed projects name\n"
+  puts "out_dir - where to put fresh app's files\n"
+end
+
+unless transform&&app_title&&out_dir
+  usage
+  exit
+end
+
+require 'benchmark'
+
+time = Benchmark.realtime {Transender::Ji.xcode_rename({:transform => transform, :app_title => app_title, :ji_path => out_dir})}
+puts "Realtime used : #{time}sec"
+
+# EOF
