@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{transender}
-  s.version = "0.2.11"
+  s.version = "0.2.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mihael"]
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{transender}
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Use Transender whenever you need to git-clone and rename XCode iPhone SDK projects.}
   s.test_files = [
     "spec/spec_helper.rb",
