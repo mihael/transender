@@ -341,7 +341,7 @@ module Transender
 
     def rename_files
       FileUtils.mv "#{app_path}/#{transform_title}.xcodeproj", "#{app_path}/#{app_title}.xcodeproj"
-      Dir["#{app_path}/*.{m,h,pch}"].each do |filename|
+      Dir["#{app_path}/*.{m,h,pch,plist}"].each do |filename|
         if filename =~ /#{transform_title}/
             FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
         end
