@@ -5,17 +5,16 @@
 
 Gem::Specification.new do |s|
   s.name = %q{transender}
-  s.version = "0.2.9"
+  s.version = "0.2.10"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mihael"]
-  s.date = %q{2010-01-21}
+  s.date = %q{2010-03-26}
   s.email = %q{kitschmaster@gmail.com}
   s.executables = ["transender", "transender-rename"]
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc",
-     "README.txt"
+     "README.rdoc"
   ]
   s.files = [
     ".gitattributes",
@@ -24,7 +23,6 @@ Gem::Specification.new do |s|
      "History.txt",
      "LICENSE",
      "README.rdoc",
-     "README.txt",
      "Rakefile",
      "VERSION.yml",
      "bin/transender",
