@@ -58,6 +58,7 @@ Nothing you would not have. Only the simple tools.
 == INSTALL:
 
 * sudo gem install transender
+* sudo gem install mihael-transender --source http://gems.github.com
 
 == LICENSE:
 
