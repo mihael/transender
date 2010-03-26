@@ -16,7 +16,7 @@ I call the process of cloning an existing app and renaming it right after: trans
 
 So transend your codes.
 
-== FEATURES/PROBLEMS:
+== FEATURES:
 
 * can clone XCode projects (on git) and rename them successfully (tested only on iPhone/iPod Touch projects)
 * use from command line or ruby program
