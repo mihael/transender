@@ -240,6 +240,7 @@ module Transender
       #prepare destination without any warning
       FileUtils.rm_rf @app_path #`rm -rf #{@app_path}`
       `cp -r #{@transform} #{@app_path}`
+      rename
     end
     
     #clones from transform then removes git
