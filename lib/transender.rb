@@ -62,10 +62,18 @@ module Transender
     out_file
   end
 
+  #for 67_PennyStocksFree/KitschBlogFree/Classes/Tests/ResourceTest.h"
+  #result is: ResurceTest.h
   def self.extract_name(url)
     url.split('/').last.split('.').first
   end
-  
+
+  #for 67_PennyStocksFree/KitschBlogFree/Classes/Tests/ResourceTest.h"
+  #result is: 67_PennyStocksFree/KitschBlogFree/Classes/Tests
+  def self.extract_path(url)
+    url.split('/')[0..-2].join('/')
+  end
+
   #Transender - Ji
   class Ji
     attr_accessor :options, :app_title, :app_path, :transform, :transform_title, :ji_path, :abowl_path, :abowl_yml, :id
