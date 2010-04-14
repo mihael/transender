@@ -63,11 +63,17 @@ module Transender
   end
 
   #for 67_PennyStocksFree/KitschBlogFree/Classes/Tests/ResourceTest.h"
-  #result is: ResurceTest.h
+  #result is: ResurceTest
   def self.extract_name(url)
     url.split('/').last.split('.').first
   end
 
+  #for 67_PennyStocksFree/KitschBlogFree/Classes/Tests/ResourceTest.h"
+  #result is: ResurceTest.h
+  def self.extract_filename(url)
+    url.split('/').last
+  end
+  
   #for 67_PennyStocksFree/KitschBlogFree/Classes/Tests/ResourceTest.h"
   #result is: 67_PennyStocksFree/KitschBlogFree/Classes/Tests
   def self.extract_path(url)
@@ -352,7 +358,7 @@ module Transender
       FileUtils.mv "#{app_path}/#{transform_title}.xcodeproj", "#{app_path}/#{app_title}.xcodeproj"
       Dir["#{app_path}/*.{m,h,pch,plist}"].each do |filename|
         path = Transender.extract_path(filename)
-        name = Transender.extract_name(filename)
+        name = Transender.extract_filename(filename)
         if name =~ /#{transform_title}/
             #FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
             dest = name.gsub(/#{transform_title}/, app_title)
@@ -363,7 +369,7 @@ module Transender
       end
       Dir["#{app_path}/Classes/**/*.{m,h}"].each do |filename|
         path = Transender.extract_path(filename)
-        name = Transender.extract_name(filename)
+        name = Transender.extract_filename(filename)
         if name =~ /#{transform_title}/
             #FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
             dest = name.gsub(/#{transform_title}/, app_title)
