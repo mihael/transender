@@ -340,15 +340,28 @@ module Transender
     private
 
     def rename_files
+      puts "rename_files #{transform_title} > #{app_title}"
       FileUtils.mv "#{app_path}/#{transform_title}.xcodeproj", "#{app_path}/#{app_title}.xcodeproj"
       Dir["#{app_path}/*.{m,h,pch,plist}"].each do |filename|
-        if filename =~ /#{transform_title}/
-            FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
+        path = Transender.extract_path(filename)
+        name = Transender.extract_name(filename)
+        if name =~ /#{transform_title}/
+            #FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
+            dest = name.gsub(/#{transform_title}/, app_title)
+            filedest = File.join(path,dest)
+            puts "mv #{filename} #{filedest}"
+            `mv #{filename} #{filedest}`
         end
       end
       Dir["#{app_path}/Classes/**/*.{m,h}"].each do |filename|
-        if filename =~ /#{transform_title}/
-            FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
+        path = Transender.extract_path(filename)
+        name = Transender.extract_name(filename)
+        if name =~ /#{transform_title}/
+            #FileUtils.mv filename, filename.gsub(/#{transform_title}/, app_title)
+            dest = name.gsub(/#{transform_title}/, app_title)
+            filedest = File.join(path,dest)
+            puts "mv #{filename} #{filedest}"
+            `mv #{filename} #{filedest}`
         end
       end
       true
@@ -356,7 +369,7 @@ module Transender
       puts $!
       false
     end
-    
+
     def replace_strings_in_files
       Dir["#{app_path}/*.{m,h,pch,xib}"].each do |filename|
         Transender.replace_strings_in_file(transform_title, app_title, filename)
